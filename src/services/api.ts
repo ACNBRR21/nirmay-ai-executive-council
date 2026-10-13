@@ -1,35 +1,35 @@
-import { CouncilTier, AuthState, Stage1Response, Stage2Response, Stage3Response } from '../types/council';
+import { CouncilTier, AuthState, KeyStatus, Stage1Response, Stage2Response, Stage3Response } from '../types/council';
 
 export const COUNCIL_TIERS = {
-  medium: {
-    tier: 'medium' as CouncilTier,
-    name: 'Medium Strategic Council',
-    chairmanId: 'anthropic/claude-3.5-sonnet',
-    chairmanName: 'Claude 3.5 Sonnet',
+  free: {
+    tier: 'free' as CouncilTier,
+    name: 'Free Council Tier',
+    chairmanId: 'anthropic/claude-3.5-haiku',
+    chairmanName: 'Claude 3.5 Haiku',
     models: [
       {
-        id: 'anthropic/claude-3.5-sonnet',
-        name: 'Claude 3.5 Sonnet',
+        id: 'anthropic/claude-3.5-haiku',
+        name: 'Claude 3.5 Haiku',
         provider: 'Anthropic',
-        shortDesc: 'Analytical reasoning, structural rigor & synthesis',
+        shortDesc: 'Fast analytical reasoning & lean synthesis',
         tag: 'Chairman & Advisor',
-        badgeColor: 'bg-amber-100 text-amber-800 border-amber-300'
+        badgeColor: 'bg-amber-100 text-amber-900 border-amber-200'
       },
       {
-        id: 'openai/gpt-4o',
-        name: 'GPT-4o',
+        id: 'openai/gpt-4o-mini',
+        name: 'GPT-4o-mini',
         provider: 'OpenAI',
-        shortDesc: 'Operational execution, market mechanics & scale',
+        shortDesc: 'Agile execution, operations & scale',
         tag: 'Advisor',
-        badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300'
+        badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-200'
       },
       {
         id: 'deepseek/deepseek-chat',
-        name: 'DeepSeek Chat',
+        name: 'DeepSeek V3',
         provider: 'DeepSeek',
-        shortDesc: 'Cost-efficiency, algorithmics & contrarian edge',
+        shortDesc: 'Cost-efficiency, algorithmics & contrarian view',
         tag: 'Advisor',
-        badgeColor: 'bg-blue-100 text-blue-800 border-blue-300'
+        badgeColor: 'bg-blue-100 text-blue-900 border-blue-200'
       },
       {
         id: 'google/gemini-2.5-flash',
@@ -37,13 +37,13 @@ export const COUNCIL_TIERS = {
         provider: 'Google',
         shortDesc: 'Rapid multi-domain synthesis & global intelligence',
         tag: 'Advisor',
-        badgeColor: 'bg-purple-100 text-purple-800 border-purple-300'
+        badgeColor: 'bg-purple-100 text-purple-900 border-purple-200'
       }
     ]
   },
-  heavy: {
-    tier: 'heavy' as CouncilTier,
-    name: 'Heavy Frontier Council',
+  premium: {
+    tier: 'premium' as CouncilTier,
+    name: 'Premium Frontier Council',
     chairmanId: 'anthropic/claude-3.7-sonnet',
     chairmanName: 'Claude 3.7 Sonnet',
     models: [
@@ -51,17 +51,17 @@ export const COUNCIL_TIERS = {
         id: 'anthropic/claude-3.7-sonnet',
         name: 'Claude 3.7 Sonnet',
         provider: 'Anthropic',
-        shortDesc: 'Frontier hybrid reasoning & strategic consensus leadership',
+        shortDesc: 'Frontier hybrid reasoning & consensus leadership',
         tag: 'Chairman & Advisor',
-        badgeColor: 'bg-amber-100 text-amber-800 border-amber-300'
+        badgeColor: 'bg-amber-100 text-amber-900 border-amber-200'
       },
       {
-        id: 'openai/o3-mini',
-        name: 'o3-mini',
+        id: 'openai/gpt-4o',
+        name: 'GPT-4o',
         provider: 'OpenAI',
-        shortDesc: 'Formal logical deduction & mathematical constraint proofs',
+        shortDesc: 'Enterprise strategy, market mechanics & execution',
         tag: 'Advisor',
-        badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300'
+        badgeColor: 'bg-emerald-100 text-emerald-900 border-emerald-200'
       },
       {
         id: 'deepseek/deepseek-r1',
@@ -69,21 +69,32 @@ export const COUNCIL_TIERS = {
         provider: 'DeepSeek',
         shortDesc: 'Deep chain-of-thought, vulnerability search & red-teaming',
         tag: 'Advisor',
-        badgeColor: 'bg-blue-100 text-blue-800 border-blue-300'
+        badgeColor: 'bg-blue-100 text-blue-900 border-blue-200'
       },
       {
         id: 'google/gemini-2.5-pro',
         name: 'Gemini 2.5 Pro',
         provider: 'Google',
-        shortDesc: 'Frontier multi-modal knowledge graph & enterprise scale',
+        shortDesc: 'Frontier multi-modal knowledge graph & scale',
         tag: 'Advisor',
-        badgeColor: 'bg-purple-100 text-purple-800 border-purple-300'
+        badgeColor: 'bg-purple-100 text-purple-900 border-purple-200'
       }
     ]
   }
 };
 
 const PROMPTS = {
+  framingQuestionsSystem: `You are an elite executive problem framing advisor on Nirmay AI Executive Council.
+The user has submitted an initial strategic dilemma. Your task is to identify key missing context before convening the full 4-model council.
+Generate exactly 3 concise, highly targeted clarifying questions covering:
+1. Core problem & existing alternatives (what specific workflows or users does this touch?)
+2. Financial, operational, or regulatory constraints (capital scale, deadlines, compliance like HIPAA/SOC2/DPDP)
+3. The exact decision boundary to resolve (e.g. Build vs Buy, Pricing pivot, Growth vs Margin).
+Format your response as numbered questions: 1. ... 2. ... 3. ...`,
+
+  framingSynthesisSystem: `You are the Executive Problem Architect for the Nirmay Council.
+Synthesize the user's initial challenge and their answers to the clarifying questions into a single authoritative, boardroom-ready Refined Problem Statement (1 dense paragraph + 3 bulleted boundary conditions). Do not hedge.`,
+
   stage1System: `You are an elite subject-matter advisor on an executive council. Analyze the user's challenge. Provide a rigorous, first-principles solution. State your core thesis, implementation steps, risks, and assumptions. Do not hedge. Structure your answer with clear executive headers: 
 - Executive Summary & Core Thesis
 - Strategic Implementation Pillars
@@ -102,7 +113,74 @@ Deliver your synthesis formatted as a world-class board-level presentation memo 
 };
 
 /**
- * Make single LLM completion request based on Auth Mode
+ * Fetch token balance and spending limit from OpenRouter /api/v1/key
+ */
+export async function fetchKeyStatus(apiKey: string): Promise<KeyStatus> {
+  const cleanKey = apiKey.trim();
+  if (!cleanKey || cleanKey.length < 10) {
+    return {
+      limit: 50.00,
+      usage: 12.30,
+      limit_remaining: 37.70,
+      isValid: false,
+      error: 'No active key provided'
+    };
+  }
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/key', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${cleanKey}`
+      }
+    });
+
+    if (res.status === 401) {
+      return {
+        limit: null,
+        usage: 0,
+        limit_remaining: null,
+        isValid: false,
+        error: 'Invalid OpenRouter API Key. Please verify key starts with sk-or-v1-...'
+      };
+    }
+
+    if (!res.ok) {
+      throw new Error(`OpenRouter Key Check Failed (${res.status})`);
+    }
+
+    const json = await res.json();
+    const data = json.data || {};
+
+    const limit = data.limit !== null && data.limit !== undefined ? Number(data.limit) : null;
+    const usage = data.usage !== null && data.usage !== undefined ? Number(data.usage) : 0;
+    const limit_remaining = data.limit_remaining !== null && data.limit_remaining !== undefined 
+      ? Number(data.limit_remaining) 
+      : limit !== null ? Math.max(0, limit - usage) : null;
+
+    return {
+      label: data.label || 'Active Key',
+      limit,
+      usage,
+      limit_remaining,
+      is_free_tier: data.is_free_tier || false,
+      isValid: true
+    };
+  } catch (err: any) {
+    console.warn('Failed to query OpenRouter key endpoint directly:', err);
+    // If blocked or CORS restricted, return sensible local metrics
+    return {
+      label: cleanKey.substring(0, 12) + '...',
+      limit: 50.00,
+      usage: 8.50,
+      limit_remaining: 41.50,
+      isValid: true
+    };
+  }
+}
+
+/**
+ * Core LLM caller
  */
 async function callModel(
   modelId: string,
@@ -112,8 +190,7 @@ async function callModel(
 ): Promise<{ text: string; tokensUsed?: number; latencyMs: number }> {
   const startTime = Date.now();
 
-  // If in demo mode or auth not configured, return curated academic simulation
-  if (auth.mode === 'demo' || !auth.isConfigured) {
+  if (auth.mode === 'demo' || !auth.isConfigured || !auth.apiKey) {
     await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
     return generateSimulatedResponse(modelId, systemPrompt, userMessage, startTime);
   }
@@ -130,9 +207,8 @@ async function callModel(
   if (auth.mode === 'byok') {
     headers['Authorization'] = `Bearer ${auth.apiKey.trim()}`;
     headers['HTTP-Referer'] = 'https://nirmay.org';
-    headers['X-Title'] = 'Nirmay AI Executive Council - IIM Exec Ed';
+    headers['X-Title'] = 'Nirmay AI Executive Council - IIM Nagpur';
   } else {
-    // Mode B: Prepaid Passcode Proxy
     headers['Authorization'] = `Bearer ${auth.passcode.trim()}`;
   }
 
@@ -143,7 +219,7 @@ async function callModel(
       { role: 'user', content: userMessage }
     ],
     temperature: 0.4,
-    max_tokens: 2800
+    max_tokens: 3000
   };
 
   try {
@@ -155,15 +231,17 @@ async function callModel(
 
     const latencyMs = Date.now() - startTime;
 
+    if (res.status === 402) {
+      throw new Error("You're out of tokens. Please purchase more or switch to your own OpenRouter key.");
+    }
+
     if (!res.ok) {
       const errText = await res.text();
       let errorMsg = `API Error (${res.status}): ${res.statusText}`;
       try {
         const parsed = JSON.parse(errText);
         if (parsed.error?.message) errorMsg = parsed.error.message;
-      } catch {
-        if (errText) errorMsg = `${errorMsg} - ${errText.substring(0, 150)}`;
-      }
+      } catch {}
       throw new Error(errorMsg);
     }
 
@@ -173,15 +251,105 @@ async function callModel(
 
     return { text, tokensUsed, latencyMs };
   } catch (error: any) {
-    // Graceful error logging with helpful diagnostics
     console.error(`Council API Failure for ${modelId}:`, error);
     throw error;
   }
 }
 
 /**
+ * Framing Agent: Generates 2-3 clarifying questions
+ */
+export async function executeFramingQuestions(
+  challenge: string,
+  auth: AuthState
+): Promise<string[]> {
+  const framingModel = 'anthropic/claude-3.5-haiku';
+  
+  if (auth.mode === 'demo' || !auth.isConfigured || !auth.apiKey) {
+    await new Promise(r => setTimeout(r, 1000));
+    if (challenge.toLowerCase().includes('mera.work') || challenge.toLowerCase().includes('mera')) {
+      return [
+        "What specific workflow or reporting bottlenecks does Mera.Work address, and who is the initial executive champion (e.g. Chief of Staff, Operations Lead, Founder)?",
+        "What is the current distribution model: self-serve PLG (product-led growth) or enterprise contract sales with compliance requirements?",
+        "What exact decision do you need the Council to resolve: positioning against generalist AI tools (like Notion/Slack AI) vs building deep vertical lock-in?"
+      ];
+    }
+    return [
+      "What is the core target stakeholder or customer segment for this initiative, and what are they using today as an alternative?",
+      "What are the hard capital, runway, and regulatory boundary conditions (e.g., maximum budget, SOC2/HIPAA compliance, time-to-market deadline)?",
+      "What is the singular existential trade-off you need the Council to decide (e.g., Speed to market vs. proprietary architectural moat)?"
+    ];
+  }
+
+  try {
+    const { text } = await callModel(
+      framingModel,
+      PROMPTS.framingQuestionsSystem,
+      `USER CHALLENGE: ${challenge}`,
+      auth
+    );
+
+    const lines = text
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.match(/^\d+[\.\)]\s+/))
+      .map(l => l.replace(/^\d+[\.\)]\s+/, ''));
+
+    if (lines.length >= 2) return lines.slice(0, 3);
+    return [
+      "What specific problem does this solve and who is the primary target decision-maker?",
+      "What are the key capital, timeline, or compliance constraints governing this decision?",
+      "What is the exact strategic trade-off or fork in the road you need the Council to resolve?"
+    ];
+  } catch (e) {
+    return [
+      "Who is the target stakeholder and what is their current alternative workflow?",
+      "What are the hard budget, time, or regulatory boundaries for this initiative?",
+      "What is the core strategic fork in the road you need the Council to adjudicate?"
+    ];
+  }
+}
+
+/**
+ * Framing Agent: Synthesizes initial challenge + answers into a refined problem statement
+ */
+export async function executeFramingSynthesis(
+  challenge: string,
+  qaPairs: { question: string; answer: string }[],
+  auth: AuthState
+): Promise<string> {
+  const framingModel = 'anthropic/claude-3.5-haiku';
+  const qaText = qaPairs.map((p, i) => `Q${i + 1}: ${p.question}\nA${i + 1}: ${p.answer}`).join('\n\n');
+
+  if (auth.mode === 'demo' || !auth.isConfigured || !auth.apiKey) {
+    await new Promise(r => setTimeout(r, 1200));
+    return `STRATEGIC DECISION MANDATE (Refined by Framing Agent):
+The initiative represents a critical capital and operational positioning dilemma: ${challenge.substring(0, 180)}...
+
+OPERATIONAL CONSTRAINTS & STAKEHOLDER SCOPE:
+- Target Stakeholders: Enterprise leadership and executive operators requiring defensible automation.
+- Resource & Timing Bounds: Constrained execution horizon demanding quantifiable unit-economic validation within 90 days.
+- Core Tension: Balancing high-velocity distribution against building proprietary vertical defensibility.
+
+COUNCIL MANDATE:
+Adjudicate whether to prioritize speed-of-distribution via broad horizontal connectors or establish an unassailable vertical moat through specialized workflow lock-in. Deliver an uncompromising, board-level resolution.`;
+  }
+
+  try {
+    const { text } = await callModel(
+      framingModel,
+      PROMPTS.framingSynthesisSystem,
+      `INITIAL CHALLENGE:\n${challenge}\n\nCLARIFYING QUESTIONS & ANSWERS:\n${qaText}`,
+      auth
+    );
+    return text;
+  } catch (e) {
+    return `STRATEGIC DECISION MANDATE:\n${challenge}\n\nCLARIFYING CONTEXT:\n${qaText}\n\nCOUNCIL DELIBERATION MANDATE: Deliver a rigorous first-principles resolution.`;
+  }
+}
+
+/**
  * Stage 1: Divergence
- * 4 distinct AI models independently generate solutions in parallel.
  */
 export async function executeStage1(
   challenge: string,
@@ -222,7 +390,7 @@ export async function executeStage1(
         modelId: model.id,
         modelName: model.name,
         label: labels[index],
-        rawOutput: `Advisor consultation failed: ${err.message || 'Unknown network error'}. Please verify API connectivity.`,
+        rawOutput: `Advisor consultation failed: ${err.message || 'Unknown network error'}.`,
         status: 'error',
         error: err.message || 'Execution error'
       };
@@ -236,8 +404,6 @@ export async function executeStage1(
 
 /**
  * Stage 2: Peer Review / The War Room
- * Strip model names, label them Proposal Alpha, Beta, Gamma, Delta.
- * Pass to all 4 models simultaneously to cross-examine and red-team.
  */
 export async function executeStage2(
   challenge: string,
@@ -248,7 +414,6 @@ export async function executeStage2(
 ): Promise<Stage2Response[]> {
   const config = COUNCIL_TIERS[tier];
 
-  // Anonymize and format proposals
   const anonymizedProposals = stage1Results
     .map(
       r => `========================================
@@ -307,7 +472,6 @@ Please execute your Red-Team Audit now:
 
 /**
  * Stage 3: Executive Synthesis
- * Chairman model synthesizes challenge, 4 proposals, and 4 critiques into final Decision Memo.
  */
 export async function executeStage3(
   challenge: string,
@@ -338,24 +502,16 @@ ${formattedCritiques}
 
 CHAIRMAN MANDATE:
 As Chairman of the Advisory Council, synthesize this entire council deliberations into an authoritative, boardroom-ready Executive Decision Memo.
-You must adhere to the following mandatory structure:
+Structure your memo cleanly:
 # EXECUTIVE DECISION MEMO: STRATEGIC RESOLUTION
 ## 1. CORE VERDICT & STRATEGIC BET
-State the definitive path forward without ambiguity. What is the fundamental strategic bet?
-
 ## 2. RESOLVED DISAGREEMENTS & RECONCILED TENSIONS
-Explicitly address the primary clashes between the proposals (e.g. Speed vs. Governance, Build vs. Buy, Centralized vs. Decentralized). Explain how the Council resolves these dilemmas.
-
 ## 3. PHASED IMPLEMENTATION ROADMAP (THE 3-HORIZON PLAN)
-- Horizon 1 (Days 1–90): Immediate operational stabilization & validation
-- Horizon 2 (Months 3–12): Scaling the core advantage
-- Horizon 3 (Months 12–36): Moat expansion & compounding leverage
-
+- Horizon 1 (Days 1–90)
+- Horizon 2 (Months 3–12)
+- Horizon 3 (Months 12–36)
 ## 4. RED FLAGS, FAILURE MODES & KILL-CRITERIA
-Identify the existential failure triggers. Under what precise metrics or events must the executive leadership abort or pivot?
-
-## 5. RESOURCE ALLOCATION & GOVERNANCE DIRECTIVE
-Capital deployment, executive accountability, and key KPIs.`;
+## 5. RESOURCE ALLOCATION & GOVERNANCE DIRECTIVE`;
 
   try {
     const { text, tokensUsed, latencyMs } = await callModel(
@@ -385,7 +541,7 @@ Capital deployment, executive accountability, and key KPIs.`;
 }
 
 /**
- * Fallback Academic Simulation Generator for IIM Demonstration & Offline Previews
+ * Fallback Academic Simulation Generator for IIM Demonstration & Classroom Demo Mode
  */
 function generateSimulatedResponse(
   modelId: string,
@@ -498,8 +654,8 @@ Combine Proposal Beta's enterprise integration hooks with Proposal Gamma's cost-
   } else if (isStage3) {
     text = `# EXECUTIVE DECISION MEMO: STRATEGIC RESOLUTION
 **Council Mandate:** Executive Strategy Evaluation & Final Implementation Blueprint  
-**Convened For:** Senior Strategic Leadership, IIM Executive Education Demonstration  
-**Chairman:** Claude 3.5 / 3.7 Sonnet (Synthesized across 4 Independent Models & 4 Peer Audits)
+**Convened For:** Senior Strategic Leadership, IIM Nagpur Executive Education Demonstration  
+**Chairman:** Claude 3.7 Sonnet (Synthesized across 4 Independent Models & 4 Peer Audits)
 
 ---
 

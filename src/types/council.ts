@@ -1,4 +1,4 @@
-export type CouncilTier = 'medium' | 'heavy';
+export type CouncilTier = 'free' | 'premium';
 
 export type AccessMode = 'byok' | 'prepaid' | 'demo';
 
@@ -13,8 +13,27 @@ export interface ModelConfig {
 
 export interface CouncilConfig {
   tier: CouncilTier;
+  name: string;
   chairmanId: string;
+  chairmanName: string;
   models: ModelConfig[];
+}
+
+export interface KeyStatus {
+  label?: string;
+  limit: number | null;
+  usage: number;
+  limit_remaining: number | null;
+  is_free_tier?: boolean;
+  isValid: boolean;
+  error?: string;
+}
+
+export interface FramingState {
+  stage: 'idle' | 'analyzing' | 'questions_ready' | 'synthesizing' | 'refined';
+  questions: string[];
+  answers: string[];
+  refinedStatement: string;
 }
 
 export interface Stage1Response {
@@ -51,10 +70,11 @@ export interface Stage3Response {
 export interface CouncilSession {
   id: string;
   timestamp: string;
-  challenge: string;
+  originalChallenge: string;
+  refinedChallenge: string;
   tier: CouncilTier;
   accessMode: AccessMode;
-  currentStage: 0 | 1 | 2 | 3; // 0 = idle, 1 = divergence, 2 = peer review, 3 = synthesis
+  currentStage: 0 | 1 | 2 | 3; // 0 = idle/framing, 1 = divergence, 2 = peer review, 3 = synthesis
   isProcessing: boolean;
   stage1Results: Stage1Response[];
   stage2Results: Stage2Response[];
@@ -70,4 +90,5 @@ export interface AuthState {
   passcode: string;
   proxyUrl: string;
   isConfigured: boolean;
+  keyStatus?: KeyStatus;
 }

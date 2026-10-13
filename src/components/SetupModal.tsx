@@ -20,16 +20,24 @@ export const SetupModal: React.FC<SetupModalProps> = ({
   const [passcode, setPasscode] = useState(auth.passcode);
   const [showApiKey, setShowApiKey] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
+  const [copiedPaypal, setCopiedPaypal] = useState(false);
   const [selectedTier, setSelectedTier] = useState<'2' | '5' | '10'>('5');
 
   if (!isOpen) return null;
 
   const upiId = 'rishi.roy-1@okhdfcbank';
+  const paypalEmail = 'rishi.roy+paypalindia@gmail.com';
 
   const handleCopyUpi = () => {
     navigator.clipboard.writeText(upiId);
     setCopiedUpi(true);
     setTimeout(() => setCopiedUpi(false), 2000);
+  };
+
+  const handleCopyPaypal = () => {
+    navigator.clipboard.writeText(paypalEmail);
+    setCopiedPaypal(true);
+    setTimeout(() => setCopiedPaypal(false), 2000);
   };
 
   const handleSave = () => {
@@ -63,7 +71,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
             </div>
             <div>
               <h2 className="text-lg sm:text-xl font-serif font-bold text-stone-900 tracking-tight">
-                Council Access & Compute Token Economics
+                Gateway Setup & Pre-Paid Keys
               </h2>
               <p className="text-xs text-stone-500 font-sans">
                 Academic & Non-Commercial Deployment • Nirmay Open Architecture
@@ -87,12 +95,12 @@ export const SetupModal: React.FC<SetupModalProps> = ({
               <span>Non-Commercial Research Initiative</span>
             </div>
             <p>
-              This is a non-commercial academic research project hosted on <strong>nirmay.org</strong> and demonstrated for senior strategic executives in the <strong>Executive Education program at IIM (Indian Institute of Management)</strong> by Professor SomShekhar. 
-              <strong> The money collected is exclusively to run the models and reimburse frontier API inferencing compute tokens.</strong>
+              Nirmay is an academic research project for executive education at <strong>IIM Nagpur</strong> by Professor Som Sekhar Bhattacharyya. 
+              <strong> All contributions are 100% directed towards reimbursing API compute tokens consumed by the frontier models.</strong>
             </p>
           </div>
 
-          {/* Access Mode Selector */}
+          {/* Mode Selector Tabs */}
           <div className="grid grid-cols-3 gap-2 p-1.5 bg-stone-100/90 rounded-2xl border border-stone-200">
             <button
               onClick={() => setSelectedMode('byok')}
@@ -114,7 +122,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
               }`}
             >
               <QrCode className="w-3.5 h-3.5 text-amber-600" />
-              <span>Mode B: UPI Compute Tier</span>
+              <span>Mode B: Pre-Paid Key</span>
             </button>
             <button
               onClick={() => setSelectedMode('demo')}
@@ -125,7 +133,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
               }`}
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Exec Demo Mode</span>
+              <span>Demo / Sim Mode</span>
             </button>
           </div>
 
@@ -137,11 +145,11 @@ export const SetupModal: React.FC<SetupModalProps> = ({
                   <Key className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                   <div className="text-xs text-stone-700 space-y-1">
                     <p className="font-bold text-sm text-stone-900">
-                      Bring Your Own OpenRouter API Key (100% Free Platform)
+                      Bring Your Own OpenRouter API Key (Primary & Free Path)
                     </p>
                     <p className="leading-relaxed text-stone-600">
-                      If you have your own OpenRouter key, you can run all council models with zero platform markups. Your key is stored exclusively in your browser's <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">localStorage</code>. 
-                      Requests dispatch directly from your client to <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">openrouter.ai/api/v1/chat/completions</code>.
+                      Zero payment to us. No login. Your key is stored exclusively in your browser's <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">localStorage</code>. 
+                      Requests dispatch directly from your client to <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">openrouter.ai</code>.
                     </p>
                   </div>
                 </div>
@@ -149,7 +157,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
 
               <div>
                 <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5 font-mono">
-                  Your OpenRouter API Key
+                  Enter Your OpenRouter Key (Starts with sk-or-v1-...)
                 </label>
                 <div className="relative">
                   <input
@@ -175,7 +183,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
                     rel="noreferrer"
                     className="text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center space-x-1"
                   >
-                    <span>Generate key on OpenRouter.ai</span>
+                    <span>Create key on OpenRouter.ai</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -183,84 +191,65 @@ export const SetupModal: React.FC<SetupModalProps> = ({
             </div>
           )}
 
-          {/* MODE B: UPI PREPAID TIER */}
+          {/* MODE B: PRE-PAID KEY (CONVENIENCE OPTION) */}
           {selectedMode === 'prepaid' && (
             <div className="space-y-5 animate-fadeIn">
-              {/* Estimated Model Compute Cost Breakdown */}
-              <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-xs space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500">
-                    Transparent Compute Cost Estimation (+20% Safety Margin):
-                  </span>
-                  <span className="text-[10px] text-stone-400 font-mono">9 LLM Calls / Run</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTier('2')}
-                    className={`p-3 rounded-xl border text-left transition-all ${
-                      selectedTier === '2'
-                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
-                        : 'border-stone-200 bg-stone-50 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-stone-900">$2 (₹170)</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-stone-200 font-mono">Single Run</span>
-                    </div>
-                    <div className="text-[11px] text-stone-600 font-medium">Medium Council Run</div>
-                    <p className="text-[10px] text-stone-500 mt-1">
-                      ~30k tokens across 4 models + Chairman. Base: $1.50 + 20% buffer ($1.80 rounded).
-                    </p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTier('5')}
-                    className={`p-3 rounded-xl border text-left transition-all ${
-                      selectedTier === '5'
-                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
-                        : 'border-stone-200 bg-stone-50 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-stone-900">$5 (₹425)</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-200 text-amber-900 font-mono font-bold">Multi-Pass</span>
-                    </div>
-                    <div className="text-[11px] text-stone-600 font-medium">Medium Session Pass</div>
-                    <p className="text-[10px] text-stone-500 mt-1">
-                      Covers 3 iterative strategic dilemmas or sensitivity analyses with Claude 3.5 Sonnet & GPT-4o.
-                    </p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTier('10')}
-                    className={`p-3 rounded-xl border text-left transition-all ${
-                      selectedTier === '10'
-                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
-                        : 'border-stone-200 bg-stone-50 hover:bg-white'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-xs text-stone-900">$10 (₹850)</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-mono">Frontier</span>
-                    </div>
-                    <div className="text-[11px] text-stone-600 font-medium">Heavy Reasoning Council</div>
-                    <p className="text-[10px] text-stone-500 mt-1">
-                      Claude 3.7 Sonnet, o3-mini, DeepSeek R1, Gemini 2.5 Pro (~70k reasoning tokens. Base: $7.20 + 20%).
-                    </p>
-                  </button>
-                </div>
+              <div className="p-3.5 bg-stone-50 border border-stone-200 rounded-2xl text-xs text-stone-600 leading-relaxed">
+                <span className="font-bold text-stone-900">Convenience Setup: </span>
+                If you prefer not to manage your own OpenRouter billing, Rishi Roy can generate a pre-paid child API key with a fixed spending budget corresponding to your payment.
               </div>
 
-              {/* Official Google Pay QR Code Image & Details */}
+              {/* Pricing Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTier('2')}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    selectedTier === '2'
+                      ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                      : 'border-stone-200 bg-white hover:bg-stone-50'
+                  }`}
+                >
+                  <div className="font-bold text-xs text-stone-900">$2 (₹170)</div>
+                  <div className="text-[11px] text-stone-600 font-medium mt-0.5">Single Council Run</div>
+                  <p className="text-[10px] text-stone-500 mt-1">Covers 1 complete 9-model council deliberation.</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedTier('5')}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    selectedTier === '5'
+                      ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                      : 'border-stone-200 bg-white hover:bg-stone-50'
+                  }`}
+                >
+                  <div className="font-bold text-xs text-stone-900">$5 (₹425)</div>
+                  <div className="text-[11px] text-stone-600 font-medium mt-0.5">Session Multi-Pass</div>
+                  <p className="text-[10px] text-stone-500 mt-1">Covers 3 full multi-model strategic sessions.</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedTier('10')}
+                  className={`p-3 rounded-xl border text-left transition-all ${
+                    selectedTier === '10'
+                      ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                      : 'border-stone-200 bg-white hover:bg-stone-50'
+                  }`}
+                >
+                  <div className="font-bold text-xs text-stone-900">$10 (₹850)</div>
+                  <div className="text-[11px] text-stone-600 font-medium mt-0.5">Heavy Frontier Pass</div>
+                  <p className="text-[10px] text-stone-500 mt-1">Full reasoning traces with Claude 3.7 & DeepSeek R1.</p>
+                </button>
+              </div>
+
+              {/* Payment Details: Domestic UPI + International PayPal */}
               <div className="bg-white border border-stone-200 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-center gap-6">
-                <div className="w-44 h-56 bg-stone-50 rounded-2xl p-2.5 border border-stone-200 shadow-xs flex flex-col items-center justify-center flex-shrink-0">
+                <div className="w-40 h-52 bg-stone-50 rounded-2xl p-2 border border-stone-200 flex flex-col items-center justify-center flex-shrink-0 shadow-xs">
                   <img
                     src="/images/google-pay-qr.png"
-                    alt="Rishi Roy Google Pay QR Code"
+                    alt="Rishi Roy Google Pay QR"
                     className="w-full h-auto object-contain rounded-xl"
                   />
                 </div>
@@ -268,97 +257,94 @@ export const SetupModal: React.FC<SetupModalProps> = ({
                 <div className="space-y-3 text-xs text-stone-600 flex-1">
                   <div>
                     <h4 className="font-serif font-bold text-base text-stone-900">
-                      Scan to Contribute via Google Pay or Any UPI App
+                      Payment Channels (India & International)
                     </h4>
-                    <p className="text-[11px] text-stone-500 mt-0.5">
-                      PhonePe, Google Pay, Paytm, CRED, BHIM
+                    <p className="text-[11px] text-stone-500">
+                      Scan QR or use one of the direct addresses below:
                     </p>
                   </div>
 
-                  <div className="bg-stone-50 rounded-xl p-3 border border-stone-200 space-y-2">
+                  {/* UPI Box */}
+                  <div className="bg-stone-50 rounded-xl p-3 border border-stone-200 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-stone-500 text-[10px] uppercase">Official UPI ID:</span>
+                      <span className="font-mono text-stone-500 text-[10px] uppercase font-bold">India UPI ID:</span>
                       <button
                         type="button"
                         onClick={handleCopyUpi}
-                        className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-white border border-stone-300 hover:bg-stone-100 text-[11px] font-semibold text-stone-700 transition-colors shadow-xs"
+                        className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-white border border-stone-300 text-[10px] font-semibold text-stone-700"
                       >
                         {copiedUpi ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-stone-500" />}
-                        <span>{copiedUpi ? 'Copied' : 'Copy UPI'}</span>
+                        <span>{copiedUpi ? 'Copied' : 'Copy'}</span>
                       </button>
                     </div>
-                    <div className="font-mono font-bold text-sm text-stone-900 select-all">
-                      {upiId}
-                    </div>
-                    <div className="text-[11px] text-stone-500 flex items-center justify-between pt-1 border-t border-stone-200/60">
-                      <span>Recipient: <strong>Rishi Roy</strong></span>
-                      <span>Target: <strong>${selectedTier} (₹{selectedTier === '2' ? '170' : selectedTier === '5' ? '425' : '850'} INR)</strong></span>
-                    </div>
+                    <div className="font-mono font-bold text-xs text-stone-900 select-all">{upiId}</div>
                   </div>
 
-                  <div className="p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-xl text-[11px] text-emerald-900 space-y-0.5">
-                    <div className="font-bold flex items-center space-x-1 text-emerald-800">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Security & Public Safety Assessment</span>
+                  {/* PayPal Box */}
+                  <div className="bg-stone-50 rounded-xl p-3 border border-stone-200 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-stone-500 text-[10px] uppercase font-bold">International PayPal:</span>
+                      <button
+                        type="button"
+                        onClick={handleCopyPaypal}
+                        className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-white border border-stone-300 text-[10px] font-semibold text-stone-700"
+                      >
+                        {copiedPaypal ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-stone-500" />}
+                        <span>{copiedPaypal ? 'Copied' : 'Copy'}</span>
+                      </button>
                     </div>
-                    <p className="text-emerald-800/80 leading-relaxed">
-                      Sharing this bank VPA (<code className="font-mono">rishi.roy-1@okhdfcbank</code>) is safe. A UPI VPA is cryptographically designed by NPCI solely to receive inbound payments into the account—it cannot be used to debit or withdraw funds.
-                    </p>
+                    <div className="font-mono font-bold text-xs text-stone-900 select-all">{paypalEmail}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Passcode Input Field */}
+              {/* Passcode Entry */}
               <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-xs space-y-2">
                 <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider font-mono">
-                  Enter Your One-Time Session Passcode
+                  Enter Pre-Paid Key or Passcode
                 </label>
                 <input
                   type="text"
                   value={passcode}
                   onChange={e => setPasscode(e.target.value.toUpperCase())}
-                  placeholder="COUNCIL-XXXX-YYYY"
+                  placeholder="COUNCIL-XXXX-YYYY (or pre-paid sk-or-v1- key)"
                   className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm font-mono text-stone-900 uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400"
                 />
                 <p className="text-[11px] text-stone-500">
-                  Upon completing payment on UPI, Rishi Roy will provide your one-time session token valid for your strategic challenge session.
+                  After payment, Rishi will email your pre-configured key (with pre-set $5, $10, or $50 limit).
                 </p>
               </div>
             </div>
           )}
 
-          {/* MODE C: EXEC SIMULATION / DEMO */}
+          {/* MODE C: DEMO MODE */}
           {selectedMode === 'demo' && (
             <div className="space-y-4 animate-fadeIn">
               <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 shadow-xs space-y-2">
                 <div className="flex items-center space-x-2 font-bold text-amber-900 font-serif text-base">
                   <Sparkles className="w-4 h-4 text-amber-600" />
-                  <span>Executive Classroom Demonstration Mode</span>
+                  <span>Professor Som Sekhar Bhattacharyya Demo Mode</span>
                 </div>
                 <p className="text-xs text-amber-900/90 leading-relaxed font-sans">
-                  Built specifically for classroom demonstrations by Professor SomShekhar at IIM Executive Education and portfolio evaluation. 
-                  Executes the full 3-stage Divergence, Peer Review War Room, and Chairman Synthesis using authentic McKinsey/INSEAD level synthesis models with zero token charges or API credentials.
+                  Built specifically for classroom demonstrations at IIM Nagpur and evaluator review. 
+                  Demonstrates the full pipeline (Framing Clarifying Questions → Divergence → Peer Red-Teaming → Chairman Synthesis) with pre-scripted, streaming output—ensuring 100% reliability regardless of live classroom network speeds or token outages.
                 </p>
-              </div>
-              <div className="p-3.5 bg-white border border-stone-200 rounded-xl text-xs text-stone-700 flex items-center space-x-2.5 shadow-xs">
-                <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                <span>Instant access. Zero setup or payment required to evaluate the council pattern.</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer */}
+        {/* Footer Actions */}
         <div className="px-6 sm:px-8 py-4 border-t border-stone-200/80 bg-white flex items-center justify-between">
           <div className="flex items-center space-x-2 text-xs text-stone-500 font-sans">
             <Lock className="w-3.5 h-3.5 text-stone-400" />
-            <span>Secure client-side storage</span>
+            <span>Encrypted in browser localStorage</span>
           </div>
           <div className="flex items-center space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-800 transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-800"
             >
               Cancel
             </button>
