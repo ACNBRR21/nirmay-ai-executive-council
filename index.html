@@ -1,36 +1,42 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en" class="h-full bg-[#faf9f5]">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nirmay AI Executive Council | IIM Executive Education</title>
     
-    <!-- Google Fonts for Executive Editorial Styling -->
+    <!-- Google Fonts for Crucible-style Editorial Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS Engine -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              serif: ['Newsreader', 'Georgia', 'Cambria', 'Times New Roman', 'serif'],
-              sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+              serif: ['Newsreader', 'Georgia', 'Cambria', 'serif'],
+              sans: ['Plus Jakarta Sans', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
               mono: ['JetBrains Mono', 'Fira Code', 'Menlo', 'monospace'],
             },
             colors: {
-              navy: {
-                900: '#0b1120',
-                950: '#060a12',
+              ivory: {
+                50: '#fdfdfb',
+                100: '#faf9f5',
+                200: '#f5f3ec',
+                300: '#ede9dd',
               },
-              slate: {
-                850: '#151f32',
-                950: '#070b14',
+              terracotta: {
+                500: '#ea580c',
+                600: '#c2410c',
+              },
+              espresso: {
+                800: '#292524',
+                900: '#1c1917',
+                950: '#0c0a09',
               }
             }
           }
@@ -39,9 +45,9 @@
     </script>
     <style>
       body {
-        font-family: 'Inter', sans-serif;
-        background-color: #070b14;
-        color: #f1f5f9;
+        font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+        background-color: #faf9f5;
+        color: #1c1917;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
@@ -53,7 +59,7 @@
       }
     </style>
   </head>
-  <body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
+  <body class="min-h-screen bg-[#faf9f5] text-stone-900 flex flex-col selection:bg-amber-500 selection:text-white">
     <div id="root" class="min-h-screen flex flex-col"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AuthState, AccessMode } from '../types/council';
-import { Key, QrCode, Shield, CheckCircle2, ExternalLink, Sparkles, Eye, EyeOff, Lock } from 'lucide-react';
+import { Key, QrCode, ExternalLink, Sparkles, Eye, EyeOff, Lock, Copy, Check, Info, ShieldCheck, X } from 'lucide-react';
 
 interface SetupModalProps {
   isOpen: boolean;
@@ -18,17 +18,25 @@ export const SetupModal: React.FC<SetupModalProps> = ({
   const [selectedMode, setSelectedMode] = useState<AccessMode>(auth.mode);
   const [apiKey, setApiKey] = useState(auth.apiKey);
   const [passcode, setPasscode] = useState(auth.passcode);
-  const [proxyUrl] = useState(auth.proxyUrl);
   const [showApiKey, setShowApiKey] = useState(false);
-  const [selectedPrepaidAmount, setSelectedPrepaidAmount] = useState<'425' | '850'>('425');
+  const [copiedUpi, setCopiedUpi] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<'2' | '5' | '10'>('5');
 
   if (!isOpen) return null;
+
+  const upiId = 'rishi.roy-1@okhdfcbank';
+
+  const handleCopyUpi = () => {
+    navigator.clipboard.writeText(upiId);
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
 
   const handleSave = () => {
     let isConfigured = false;
     if (selectedMode === 'byok' && apiKey.trim().length > 10) {
       isConfigured = true;
-    } else if (selectedMode === 'prepaid' && passcode.trim().length >= 8) {
+    } else if (selectedMode === 'prepaid' && passcode.trim().length >= 6) {
       isConfigured = true;
     } else if (selectedMode === 'demo') {
       isConfigured = true;
@@ -38,98 +46,110 @@ export const SetupModal: React.FC<SetupModalProps> = ({
       mode: selectedMode,
       apiKey: apiKey.trim(),
       passcode: passcode.trim(),
-      proxyUrl: proxyUrl.trim(),
+      proxyUrl: 'https://council-api-proxy.your-cloudflare-subdomain.workers.dev',
       isConfigured
     });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-fadeIn">
+      <div className="bg-[#faf9f5] border border-stone-200 rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <div className="px-6 sm:px-8 py-5 border-b border-stone-200/80 bg-white flex items-center justify-between">
           <div className="flex items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center shadow-lg shadow-indigo-600/20">
-              <Shield className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-900 border border-amber-200 flex items-center justify-center font-serif text-lg font-bold">
+              ✦
             </div>
             <div>
-              <h2 className="text-lg font-serif font-bold text-white tracking-tight">
-                Council Access & Gateway Authentication
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-stone-900 tracking-tight">
+                Council Access & Compute Token Economics
               </h2>
-              <p className="text-xs text-slate-400 font-sans">
-                Academic & Executive Deployment • Nirmay Open Architecture
+              <p className="text-xs text-stone-500 font-sans">
+                Academic & Non-Commercial Deployment • Nirmay Open Architecture
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+            className="text-stone-400 hover:text-stone-600 p-1.5 rounded-lg hover:bg-stone-100 transition-colors"
           >
-            ✕
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Mode Selector Tabs */}
-        <div className="p-6 overflow-y-auto space-y-6">
-          <div className="grid grid-cols-3 gap-2.5 p-1.5 bg-slate-950/80 rounded-xl border border-slate-800">
+        {/* Modal Body */}
+        <div className="p-6 sm:p-8 overflow-y-auto space-y-6">
+          {/* Non-Commercial Academic Disclaimer Box */}
+          <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 text-xs text-amber-950 space-y-1.5 font-sans leading-relaxed">
+            <div className="flex items-center space-x-2 font-bold text-amber-900 font-mono text-[11px] uppercase tracking-wider">
+              <Info className="w-3.5 h-3.5 text-amber-700" />
+              <span>Non-Commercial Research Initiative</span>
+            </div>
+            <p>
+              This is a non-commercial academic research project hosted on <strong>nirmay.org</strong> and demonstrated for senior strategic executives in the <strong>Executive Education program at IIM (Indian Institute of Management)</strong> by Professor SomShekhar. 
+              <strong> The money collected is exclusively to run the models and reimburse frontier API inferencing compute tokens.</strong>
+            </p>
+          </div>
+
+          {/* Access Mode Selector */}
+          <div className="grid grid-cols-3 gap-2 p-1.5 bg-stone-100/90 rounded-2xl border border-stone-200">
             <button
               onClick={() => setSelectedMode('byok')}
-              className={`flex items-center justify-center space-x-2 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
                 selectedMode === 'byok'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-stone-900 shadow-xs border border-stone-200'
+                  : 'text-stone-600 hover:text-stone-900'
               }`}
             >
-              <Key className="w-3.5 h-3.5" />
+              <Key className="w-3.5 h-3.5 text-indigo-600" />
               <span>Mode A: BYOK (Free)</span>
             </button>
             <button
               onClick={() => setSelectedMode('prepaid')}
-              className={`flex items-center justify-center space-x-2 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
                 selectedMode === 'prepaid'
-                  ? 'bg-amber-500 text-slate-950 font-bold shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-stone-900 shadow-xs border border-stone-200'
+                  : 'text-stone-600 hover:text-stone-900'
               }`}
             >
-              <QrCode className="w-3.5 h-3.5" />
-              <span>Mode B: Prepaid Tier</span>
+              <QrCode className="w-3.5 h-3.5 text-amber-600" />
+              <span>Mode B: UPI Compute Tier</span>
             </button>
             <button
               onClick={() => setSelectedMode('demo')}
-              className={`flex items-center justify-center space-x-2 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center justify-center space-x-1.5 py-2.5 px-3 rounded-xl text-xs font-semibold transition-all ${
                 selectedMode === 'demo'
-                  ? 'bg-slate-800 text-amber-300 border border-amber-500/30 shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white text-stone-900 shadow-xs border border-stone-200'
+                  : 'text-stone-600 hover:text-stone-900'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Demo / Exec Sim</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <span>Exec Demo Mode</span>
             </button>
           </div>
 
           {/* MODE A: BYOK */}
           {selectedMode === 'byok' && (
             <div className="space-y-4 animate-fadeIn">
-              <div className="bg-indigo-950/20 border border-indigo-500/30 rounded-xl p-4">
+              <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-xs">
                 <div className="flex items-start space-x-3">
-                  <Key className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs space-y-1">
-                    <p className="font-bold text-sm text-indigo-200">
-                      Bring Your Own OpenRouter Key (100% Free Platform)
+                  <Key className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+                  <div className="text-xs text-stone-700 space-y-1">
+                    <p className="font-bold text-sm text-stone-900">
+                      Bring Your Own OpenRouter API Key (100% Free Platform)
                     </p>
-                    <p className="text-slate-300 leading-relaxed">
-                      Your key is saved locally in your browser's <code className="bg-slate-900 px-1.5 py-0.5 rounded text-indigo-300 font-mono">localStorage</code>. 
-                      All requests dispatch directly to <code className="bg-slate-900 px-1.5 py-0.5 rounded text-indigo-300 font-mono">https://openrouter.ai/api/v1/chat/completions</code>. 
-                      No middleware logs or stores your credentials.
+                    <p className="leading-relaxed text-stone-600">
+                      If you have your own OpenRouter key, you can run all council models with zero platform markups. Your key is stored exclusively in your browser's <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">localStorage</code>. 
+                      Requests dispatch directly from your client to <code className="bg-stone-100 px-1 py-0.5 rounded font-mono text-stone-800">openrouter.ai/api/v1/chat/completions</code>.
                     </p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 font-mono">
-                  OpenRouter API Key
+                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider mb-1.5 font-mono">
+                  Your OpenRouter API Key
                 </label>
                 <div className="relative">
                   <input
@@ -137,25 +157,25 @@ export const SetupModal: React.FC<SetupModalProps> = ({
                     value={apiKey}
                     onChange={e => setApiKey(e.target.value)}
                     placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                    className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 pr-10"
+                    className="w-full px-4 py-2.5 bg-white border border-stone-200 rounded-xl text-sm font-mono text-stone-900 focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400 pr-10 shadow-xs"
                   />
                   <button
                     type="button"
                     onClick={() => setShowApiKey(!showApiKey)}
-                    className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300"
+                    className="absolute right-3.5 top-3 text-stone-400 hover:text-stone-600"
                   >
                     {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                <div className="mt-2.5 flex items-center justify-between text-xs text-slate-400">
-                  <span>Don't have an OpenRouter key?</span>
+                <div className="mt-2 flex items-center justify-between text-xs text-stone-500">
+                  <span>Need an OpenRouter key?</span>
                   <a
                     href="https://openrouter.ai/keys"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-indigo-400 hover:text-indigo-300 font-medium inline-flex items-center space-x-1"
+                    className="text-indigo-600 hover:text-indigo-800 font-medium inline-flex items-center space-x-1"
                   >
-                    <span>Generate key on OpenRouter</span>
+                    <span>Generate key on OpenRouter.ai</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -163,149 +183,191 @@ export const SetupModal: React.FC<SetupModalProps> = ({
             </div>
           )}
 
-          {/* MODE B: PREPAID TIER */}
+          {/* MODE B: UPI PREPAID TIER */}
           {selectedMode === 'prepaid' && (
-            <div className="space-y-4 animate-fadeIn">
-              <div className="bg-slate-950/60 border border-slate-800 rounded-xl p-4">
-                <div className="flex items-start space-x-3">
-                  <QrCode className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs space-y-1">
-                    <p className="font-bold text-sm text-white">
-                      Prepaid Council Passcode (No API Key Required)
+            <div className="space-y-5 animate-fadeIn">
+              {/* Estimated Model Compute Cost Breakdown */}
+              <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-stone-500">
+                    Transparent Compute Cost Estimation (+20% Safety Margin):
+                  </span>
+                  <span className="text-[10px] text-stone-400 font-mono">9 LLM Calls / Run</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTier('2')}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      selectedTier === '2'
+                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                        : 'border-stone-200 bg-stone-50 hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-xs text-stone-900">$2 (₹170)</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-stone-200 font-mono">Single Run</span>
+                    </div>
+                    <div className="text-[11px] text-stone-600 font-medium">Medium Council Run</div>
+                    <p className="text-[10px] text-stone-500 mt-1">
+                      ~30k tokens across 4 models + Chairman. Base: $1.50 + 20% buffer ($1.80 rounded).
                     </p>
-                    <p className="leading-relaxed text-slate-400">
-                      Scan the UPI QR code below for instant compute credits. Upon receipt, a 12-character one-time Passcode is issued for your session, proxied through our hardened Cloudflare Worker.
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTier('5')}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      selectedTier === '5'
+                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                        : 'border-stone-200 bg-stone-50 hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-xs text-stone-900">$5 (₹425)</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-200 text-amber-900 font-mono font-bold">Multi-Pass</span>
+                    </div>
+                    <div className="text-[11px] text-stone-600 font-medium">Medium Session Pass</div>
+                    <p className="text-[10px] text-stone-500 mt-1">
+                      Covers 3 iterative strategic dilemmas or sensitivity analyses with Claude 3.5 Sonnet & GPT-4o.
+                    </p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTier('10')}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      selectedTier === '10'
+                        ? 'border-amber-500 bg-amber-50/50 ring-1 ring-amber-400 shadow-xs'
+                        : 'border-stone-200 bg-stone-50 hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-bold text-xs text-stone-900">$10 (₹850)</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-mono">Frontier</span>
+                    </div>
+                    <div className="text-[11px] text-stone-600 font-medium">Heavy Reasoning Council</div>
+                    <p className="text-[10px] text-stone-500 mt-1">
+                      Claude 3.7 Sonnet, o3-mini, DeepSeek R1, Gemini 2.5 Pro (~70k reasoning tokens. Base: $7.20 + 20%).
+                    </p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Official Google Pay QR Code Image & Details */}
+              <div className="bg-white border border-stone-200 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-center gap-6">
+                <div className="w-44 h-56 bg-stone-50 rounded-2xl p-2.5 border border-stone-200 shadow-xs flex flex-col items-center justify-center flex-shrink-0">
+                  <img
+                    src="/images/google-pay-qr.png"
+                    alt="Rishi Roy Google Pay QR Code"
+                    className="w-full h-auto object-contain rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-3 text-xs text-stone-600 flex-1">
+                  <div>
+                    <h4 className="font-serif font-bold text-base text-stone-900">
+                      Scan to Contribute via Google Pay or Any UPI App
+                    </h4>
+                    <p className="text-[11px] text-stone-500 mt-0.5">
+                      PhonePe, Google Pay, Paytm, CRED, BHIM
+                    </p>
+                  </div>
+
+                  <div className="bg-stone-50 rounded-xl p-3 border border-stone-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-stone-500 text-[10px] uppercase">Official UPI ID:</span>
+                      <button
+                        type="button"
+                        onClick={handleCopyUpi}
+                        className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-white border border-stone-300 hover:bg-stone-100 text-[11px] font-semibold text-stone-700 transition-colors shadow-xs"
+                      >
+                        {copiedUpi ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3 text-stone-500" />}
+                        <span>{copiedUpi ? 'Copied' : 'Copy UPI'}</span>
+                      </button>
+                    </div>
+                    <div className="font-mono font-bold text-sm text-stone-900 select-all">
+                      {upiId}
+                    </div>
+                    <div className="text-[11px] text-stone-500 flex items-center justify-between pt-1 border-t border-stone-200/60">
+                      <span>Recipient: <strong>Rishi Roy</strong></span>
+                      <span>Target: <strong>${selectedTier} (₹{selectedTier === '2' ? '170' : selectedTier === '5' ? '425' : '850'} INR)</strong></span>
+                    </div>
+                  </div>
+
+                  <div className="p-2.5 bg-emerald-50/70 border border-emerald-200 rounded-xl text-[11px] text-emerald-900 space-y-0.5">
+                    <div className="font-bold flex items-center space-x-1 text-emerald-800">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Security & Public Safety Assessment</span>
+                    </div>
+                    <p className="text-emerald-800/80 leading-relaxed">
+                      Sharing this bank VPA (<code className="font-mono">rishi.roy-1@okhdfcbank</code>) is safe. A UPI VPA is cryptographically designed by NPCI solely to receive inbound payments into the account—it cannot be used to debit or withdraw funds.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setSelectedPrepaidAmount('425')}
-                  className={`p-3.5 rounded-xl border text-left transition-all ${
-                    selectedPrepaidAmount === '425'
-                      ? 'border-indigo-500 bg-indigo-950/30 ring-1 ring-indigo-500'
-                      : 'border-slate-800 bg-slate-950/40 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-indigo-300 font-mono">Medium Council</span>
-                    <span className="text-xs font-mono font-bold text-white">$5 (₹425)</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">Claude 3.5 Sonnet, GPT-4o, DeepSeek Chat, Gemini 2.5 Flash</p>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedPrepaidAmount('850')}
-                  className={`p-3.5 rounded-xl border text-left transition-all ${
-                    selectedPrepaidAmount === '850'
-                      ? 'border-amber-500 bg-amber-950/30 ring-1 ring-amber-500'
-                      : 'border-slate-800 bg-slate-950/40 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold uppercase tracking-wider text-amber-300 font-mono">Heavy Frontier</span>
-                    <span className="text-xs font-mono font-bold text-white">$10 (₹850)</span>
-                  </div>
-                  <p className="text-[11px] text-slate-400">Claude 3.7 Sonnet, o3-mini, DeepSeek R1, Gemini 2.5 Pro</p>
-                </button>
-              </div>
-
-              <div className="border border-slate-800 rounded-xl p-4 bg-slate-950/60 flex flex-col md:flex-row items-center gap-5">
-                <div className="w-36 h-36 bg-white rounded-xl p-2 flex flex-col items-center justify-center flex-shrink-0 shadow-lg">
-                  <svg className="w-28 h-28 text-slate-950" viewBox="0 0 100 100" fill="currentColor">
-                    <path d="M10,10 h30 v30 h-30 z M16,16 v18 h18 v-18 z M22,22 h6 v6 h-6 z" />
-                    <path d="M60,10 h30 v30 h-30 z M66,16 v18 h18 v-18 z M72,22 h6 v6 h-6 z" />
-                    <path d="M10,60 h30 v30 h-30 z M16,66 v18 h18 v-18 z M22,72 h6 v6 h-6 z" />
-                    <path d="M50,15 h6 v6 h-6 z M50,30 h6 v15 h-6 z M60,50 h12 v6 h-12 z M78,50 h12 v10 h-12 z" />
-                    <path d="M48,65 h10 v10 h-10 z M65,70 h8 v15 h-8 z M80,75 h10 v15 h-10 z M50,85 h10 v5 h-10 z" />
-                  </svg>
-                  <span className="text-[9px] font-mono text-slate-600 uppercase tracking-tight mt-1 font-bold">UPI: rishi@upi</span>
-                </div>
-                <div className="space-y-2 text-xs text-slate-300 flex-1">
-                  <div className="font-bold text-white text-sm">
-                    Scan & Pay via any UPI App (GPay, PhonePe, Paytm)
-                  </div>
-                  <div className="bg-slate-900 rounded-lg p-2.5 text-[11px] font-mono space-y-1 text-slate-300 border border-slate-800">
-                    <div><strong className="text-white">VPA:</strong> rishi@upi (Rishi Roy)</div>
-                    <div><strong className="text-white">Amount:</strong> ₹{selectedPrepaidAmount} INR</div>
-                    <div><strong className="text-white">Note:</strong> COUNCIL_{selectedPrepaidAmount === '425' ? 'MED' : 'HVY'}</div>
-                  </div>
-                  <p className="text-[11px] text-slate-400">
-                    Once transaction completes, enter your 12-character council passcode below.
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 font-mono">
-                  Enter 12-Character Passcode
+              {/* Passcode Input Field */}
+              <div className="bg-white border border-stone-200 rounded-2xl p-4 shadow-xs space-y-2">
+                <label className="block text-xs font-semibold text-stone-700 uppercase tracking-wider font-mono">
+                  Enter Your One-Time Session Passcode
                 </label>
                 <input
                   type="text"
                   value={passcode}
                   onChange={e => setPasscode(e.target.value.toUpperCase())}
-                  placeholder="EXEC-XXXX-YYYY"
-                  className="w-full px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500"
+                  placeholder="COUNCIL-XXXX-YYYY"
+                  className="w-full px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm font-mono text-stone-900 uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-stone-400 focus:border-stone-400"
                 />
-              </div>
-
-              <div className="text-[11px] text-slate-500 font-mono">
-                <span>Cloudflare Proxy: </span>
-                <code className="text-slate-400 bg-slate-950 px-1.5 py-0.5 rounded">
-                  {proxyUrl || 'https://council-api-proxy.your-cloudflare-subdomain.workers.dev'}
-                </code>
+                <p className="text-[11px] text-stone-500">
+                  Upon completing payment on UPI, Rishi Roy will provide your one-time session token valid for your strategic challenge session.
+                </p>
               </div>
             </div>
           )}
 
-          {/* MODE C: DEMO */}
+          {/* MODE C: EXEC SIMULATION / DEMO */}
           {selectedMode === 'demo' && (
             <div className="space-y-4 animate-fadeIn">
-              <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl p-4">
-                <div className="flex items-start space-x-3">
-                  <Sparkles className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-xs space-y-1">
-                    <p className="font-bold text-sm text-amber-200">
-                      Executive Classroom & Reviewer Demo Mode
-                    </p>
-                    <p className="text-slate-300 leading-relaxed">
-                      Designed for Professor SomShekhar's IIM Executive Education demonstrations and strategic leadership simulations.
-                      Executes full 3-stage Divergence, Peer Review War Room, and Chairman Synthesis using authentic McKinsey/INSEAD level synthesis models without charging tokens or requiring external credentials.
-                    </p>
-                  </div>
+              <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-5 shadow-xs space-y-2">
+                <div className="flex items-center space-x-2 font-bold text-amber-900 font-serif text-base">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <span>Executive Classroom Demonstration Mode</span>
                 </div>
+                <p className="text-xs text-amber-900/90 leading-relaxed font-sans">
+                  Built specifically for classroom demonstrations by Professor SomShekhar at IIM Executive Education and portfolio evaluation. 
+                  Executes the full 3-stage Divergence, Peer Review War Room, and Chairman Synthesis using authentic McKinsey/INSEAD level synthesis models with zero token charges or API credentials.
+                </p>
               </div>
-              <div className="p-3.5 bg-slate-950/60 border border-slate-800 rounded-xl text-xs text-slate-300 flex items-center space-x-2.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Zero setup required. Perfect for immediate evaluation and portfolio inspection.</span>
+              <div className="p-3.5 bg-white border border-stone-200 rounded-xl text-xs text-stone-700 flex items-center space-x-2.5 shadow-xs">
+                <Check className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>Instant access. Zero setup or payment required to evaluate the council pattern.</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-xs text-slate-400">
-            <Lock className="w-3.5 h-3.5 text-slate-500" />
-            <span>Encrypted client-side storage</span>
+        {/* Footer */}
+        <div className="px-6 sm:px-8 py-4 border-t border-stone-200/80 bg-white flex items-center justify-between">
+          <div className="flex items-center space-x-2 text-xs text-stone-500 font-sans">
+            <Lock className="w-3.5 h-3.5 text-stone-400" />
+            <span>Secure client-side storage</span>
           </div>
           <div className="flex items-center space-x-3">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-800 transition-colors"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="px-5 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-1.5"
+              className="px-5 py-2.5 text-xs font-semibold bg-stone-900 hover:bg-black text-white rounded-xl shadow-md transition-all flex items-center space-x-1.5"
             >
-              <CheckCircle2 className="w-3.5 h-3.5" />
+              <Check className="w-3.5 h-3.5" />
               <span>Save & Connect</span>
             </button>
           </div>

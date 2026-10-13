@@ -4,23 +4,29 @@
 
 @layer base {
   body {
-    background-color: #070b14;
-    color: #f1f5f9;
+    background-color: #faf9f5;
+    color: #1c1917;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Executive Glassmorphism & Ambient Effects */
-.executive-card {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(51, 65, 85, 0.6);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+/* Crucible Warm Aesthetic & Ambient Illumination */
+.crucible-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(251, 191, 36, 0.18), rgba(254, 243, 199, 0.08) 50%, transparent 80%);
 }
 
-.executive-glow {
-  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+.crucible-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(231, 229, 228, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(28, 25, 23, 0.05), 0 1px 3px rgba(28, 25, 23, 0.02);
+}
+
+.crucible-input-card {
+  background: #ffffff;
+  border: 1px solid rgba(214, 211, 209, 0.9);
+  box-shadow: 0 20px 45px -15px rgba(28, 25, 23, 0.08), 0 0 0 1px rgba(28, 25, 23, 0.02);
 }
 
 @keyframes fadeIn {
@@ -35,21 +41,21 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Custom Scrollbar for Executive Panels */
+/* Custom Scrollbar for Warm Editorial Theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+  background: #f5f5f4;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(71, 85, 105, 0.6);
+  background: #d6d3d1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.6);
+  background: #a8a29e;
 }

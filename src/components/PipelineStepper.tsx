@@ -20,13 +20,13 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({
     {
       index: 1,
       title: 'Stage 1: Divergence',
-      subtitle: '4 Models Independent Solutions',
+      subtitle: '4 Independent Solutions',
       icon: GitFork
     },
     {
       index: 2,
       title: 'Stage 2: The War Room',
-      subtitle: 'Anonymized Peer Red-Teaming',
+      subtitle: 'Blind Red-Team Audits',
       icon: ShieldAlert
     },
     {
@@ -38,11 +38,11 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({
   ];
 
   return (
-    <div className="bg-slate-950/70 border-b border-slate-800/80 py-3.5 px-4 sm:px-6 backdrop-blur-md">
+    <div className="bg-white border-b border-stone-200 py-3.5 px-4 sm:px-6 shadow-xs">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">
-          <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-          <span>Council Reasoning Pipeline:</span>
+        <div className="flex items-center space-x-2 text-xs font-semibold text-stone-500 uppercase tracking-wider font-mono">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+          <span>Deliberation Pipeline:</span>
         </div>
 
         <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto justify-between sm:justify-start">
@@ -59,21 +59,21 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({
                   onClick={() => isClickable && setActiveTab(step.index)}
                   className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-xl text-xs font-medium transition-all ${
                     isSelected
-                      ? 'bg-indigo-600/20 border border-indigo-500/40 text-white font-semibold shadow-lg shadow-indigo-500/10'
+                      ? 'bg-amber-100/70 border border-amber-300 text-stone-900 font-semibold shadow-xs'
                       : isClickable
-                      ? 'text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent'
-                      : 'text-slate-600 cursor-not-allowed border border-transparent'
+                      ? 'text-stone-600 hover:text-stone-900 hover:bg-stone-50 border border-transparent'
+                      : 'text-stone-300 cursor-not-allowed border border-transparent'
                   }`}
                 >
                   <div
                     className={`w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-bold ${
                       isCurrent
-                        ? 'bg-indigo-600 text-white animate-pulse shadow-md shadow-indigo-600/50'
+                        ? 'bg-stone-900 text-amber-300 animate-pulse shadow-sm'
                         : isPast
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-emerald-100 text-emerald-800'
                         : isSelected
-                        ? 'bg-indigo-500/30 text-indigo-300'
-                        : 'bg-slate-800 text-slate-500'
+                        ? 'bg-amber-200 text-stone-900'
+                        : 'bg-stone-100 text-stone-400'
                     }`}
                   >
                     {isCurrent ? (
@@ -85,15 +85,15 @@ export const PipelineStepper: React.FC<PipelineStepperProps> = ({
                     )}
                   </div>
                   <div className="text-left hidden md:block">
-                    <div className="leading-tight text-slate-200">{step.title}</div>
-                    <div className="text-[10px] text-slate-500 font-normal">
+                    <div className="leading-tight text-stone-800">{step.title}</div>
+                    <div className="text-[10px] text-stone-400 font-normal">
                       {step.subtitle}
                     </div>
                   </div>
                 </button>
 
                 {idx < steps.length - 1 && (
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-700 hidden sm:block" />
+                  <ArrowRight className="w-3.5 h-3.5 text-stone-300 hidden sm:block" />
                 )}
               </React.Fragment>
             );
