@@ -144,7 +144,7 @@ export const SetupModal: React.FC<SetupModalProps> = ({
                     onClick={() => setShowApiKey(!showApiKey)}
                     className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300"
                   >
-                    {showApiKey ? <EyeOff className="w-4 h-4" />}
+                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 <div className="mt-2.5 flex items-center justify-between text-xs text-slate-400">
